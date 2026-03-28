@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生命时钟</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 1s ease;
+        }
+
+        .container {
+            background-color: #1e1e1e;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            max-width: 520px;
+            width: 90%;
+            transition: all 0.5s ease;
+            border: 1px solid #2d2d2d;
+        }
+
+        h1 {
+            text-align: left;
+            margin-bottom: 12px;
+            color: #667eea;
+            font-size: 2.0rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .subtitle {
+            text-align: left;
+            margin-bottom: 16px;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.1px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .encouragement {
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            margin: 2px 0;
+            font-weight: 400;
+            letter-spacing: 0.1px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .date-inputs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+
+        select {
+            padding: 14px 16px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            font-size: 1rem;
+            min-width: 110px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+            background-color: #2d2d3e;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 12px;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            background-color: #667eea;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background-color: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        .back-button {
+            margin-top: 8px;
+        }
+
+        .result-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .time-display {
+            font-size: 7rem;
+            font-weight: 700;
+            color: #667eea;
+            margin: 2px 0 1px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .image-container {
+            font-size: 11rem;
+            margin: 2px 0 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .image-container:hover {
+            transform: scale(1.1);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 24px;
+            color: #666;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* 动画效果 */
+        .input-section,
+        .result-section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .time-display,
+        .image-container,
+        .encouragement {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .time-display {
+            animation-delay: 0.1s;
+        }
+
+        .image-container {
+            animation-delay: 0.2s;
+        }
+
+        .encouragement {
+            animation-delay: 0.3s;
+        }
+
+        .back-button {
+            animation: slideInUp 0.6s ease-out 0.4s both;
+        }
+
+        .copyright {
+            animation: fadeIn 0.5s ease-in-out 0.5s both;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            .date-inputs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            select {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .time-display {
+                font-size: 4rem;
+            }
+
+            .image-container {
+                font-size: 6rem;
+            }
+
+            .encouragement {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section" id="inputSection">
+            <h1>你的人生时钟，<br>指向几点？</h1>
+            <p class="subtitle">请选择你的出生日期</p>
+            <div class="date-inputs">
+                <select id="year">
+                    <option value="">年</option>
+                </select>
+                <select id="month">
+                    <option value="">月</option>
+                </select>
+                <select id="day">
+                    <option value="">日</option>
+                </select>
+            </div>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="button-container">
+                <button id="calculateButton">计算</button>
+            </div>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <h2>你现在处在人生的</h2>
+            <div class="time-display" id="timeDisplay"></div>
+            <div class="image-container" id="imageContainer"></div>
+            <div class="encouragement" id="encouragement"></div>
+            <button class="back-button" id="backButton">返回</button>
+        </div>
+        <div class="copyright">© 2026 生命时钟 - 现在是最好的时间</div>
+    </div>
+
+    <script>
+        // 年龄段数据
+        const ageData = [
+            { age: 0, time: '00:00', image: '🌱', desc: '凌晨时分', encouragement: '你是一颗刚刚发芽的种子，充满无限可能。' },
+            { age: 1, time: '00:14', image: '👶', desc: '深夜', encouragement: '你是一个新生的婴儿，世界对你来说充满了未知和惊喜。' },
+            { age: 2, time: '00:29', image: '🚼', desc: '深夜', encouragement: '你正在学习探索这个世界，每一个发现都是新的开始。' },
+            { age: 3, time: '00:43', image: '🧒', desc: '深夜', encouragement: '你的好奇心像星星一样闪烁，照亮你前进的道路。' },
+            { age: 4, time: '00:58', image: '🎨', desc: '深夜', encouragement: '你开始展现自己的个性，每一个创造都是独特的。' },
+            { age: 5, time: '01:12', image: '🏫', desc: '凌晨', encouragement: '你即将开始学校生活，知识的大门正在为你打开。' },
+            { age: 6, time: '01:27', image: '📚', desc: '凌晨', encouragement: '你像海绵一样吸收知识，每一次学习都让你成长。' },
+            { age: 7, time: '01:41', image: '🎒', desc: '凌晨', encouragement: '你已经适应了学校生活，朋友和知识伴你同行。' },
+            { age: 8, time: '01:56', image: '⚽', desc: '凌晨', encouragement: '你精力充沛，运动和游戏让你健康成长。' },
+            { age: 9, time: '02:10', image: '🎵', desc: '凌晨', encouragement: '你开始发现自己的兴趣，音乐、艺术或科学。' },
+            { age: 10, time: '02:24', image: '📱', desc: '凌晨', encouragement: '你是数字时代的原住民，科技为你打开新的世界。' },
+            { age: 11, time: '02:39', image: '🌞', desc: '凌晨', encouragement: '你像初升的太阳，充满活力和希望。' },
+            { age: 12, time: '02:53', image: '🌸', desc: '黎明前', encouragement: '你开始进入青春期，身体和思想都在发生变化。' },
+            { age: 13, time: '03:08', image: '🌸', desc: '黎明前', encouragement: '你像含苞待放的花朵，即将绽放出美丽。' },
+            { age: 14, time: '03:22', image: '🌟', desc: '黎明前', encouragement: '你开始有自己的想法和梦想，未来在向你招手。' },
+            { age: 15, time: '03:36', image: '🎯', desc: '黎明前', encouragement: '你开始明确自己的目标，为之努力奋斗。' },
+            { age: 16, time: '03:51', image: '🚗', desc: '黎明', encouragement: '你即将获得更多自由，学会为自己的选择负责。' },
+            { age: 17, time: '04:05', image: '🎓', desc: '黎明', encouragement: '你即将完成中学学业，为更高的目标努力。' },
+            { age: 18, time: '04:20', image: '🎉', desc: '黎明', encouragement: '你已经成年，开始独立面对生活的挑战和机遇。' },
+            { age: 19, time: '04:34', image: '🏫', desc: '早晨', encouragement: '你可能正在大学深造，拓展自己的视野。' },
+            { age: 20, time: '04:48', image: '🌍', desc: '早晨', encouragement: '你开始探索更广阔的世界，寻找自己的位置。' },
+            { age: 21, time: '05:03', image: '💼', desc: '早晨', encouragement: '你可能开始工作，为自己的未来奠定基础。' },
+            { age: 22, time: '05:17', image: '❤️', desc: '早晨', encouragement: '你可能开始建立深入的人际关系，寻找人生伴侣。' },
+            { age: 23, time: '05:32', image: '🏠', desc: '早晨', encouragement: '你可能开始组建自己的家庭，创造属于自己的生活。' },
+            { age: 24, time: '05:46', image: '🚀', desc: '早晨', encouragement: '你正处于事业的起步阶段，充满干劲和热情。' },
+            { age: 25, time: '06:00', image: '🌅', desc: '日出', encouragement: '你像初升的太阳，开始展现自己的光芒。' },
+            { age: 26, time: '06:14', image: '💪', desc: '上午', encouragement: '你正处于人生的黄金时期，精力充沛，能力出众。' },
+            { age: 27, time: '06:29', image: '🎯', desc: '上午', encouragement: '你已经明确了自己的目标，正在为之努力奋斗。' },
+            { age: 28, time: '06:43', image: '🏆', desc: '上午', encouragement: '你开始收获努力的成果，事业和生活都在稳步发展。' },
+            { age: 29, time: '06:58', image: '👨‍💼', desc: '上午', encouragement: '你在事业上逐渐成熟，开始承担更多责任。' },
+            { age: 30, time: '07:12', image: '🌟', desc: '上午', encouragement: '你已经进入人生的而立之年，更加成熟和自信。' },
+            { age: 31, time: '07:26', image: '💡', desc: '上午', encouragement: '你开始有更多的人生智慧，能够更好地应对挑战。' },
+            { age: 32, time: '07:41', image: '🏠', desc: '上午', encouragement: '你的家庭生活稳定，事业蒸蒸日上。' },
+            { age: 33, time: '07:55', image: '👨‍👩‍👧‍👦', desc: '上午', encouragement: '你可能已经有了自己的孩子，体验为人父母的快乐。' },
+            { age: 34, time: '08:10', image: '🚗', desc: '上午', encouragement: '你正处于人生的高速发展期，各方面都在进步。' },
+            { age: 35, time: '08:24', image: '🏆', desc: '上午', encouragement: '你在事业上取得了一定的成就，成为行业中的佼佼者。' },
+            { age: 36, time: '08:38', image: '💼', desc: '上午', encouragement: '你已经是职场中的资深人士，经验丰富。' },
+            { age: 37, time: '08:53', image: '🌱', desc: '上午', encouragement: '你开始培养新的兴趣和爱好，丰富自己的生活。' },
+            { age: 38, time: '09:07', image: '🌟', desc: '上午', encouragement: '你散发着成熟的魅力，成为他人的榜样。' },
+            { age: 39, time: '09:22', image: '🎯', desc: '上午', encouragement: '你对自己的人生有了更清晰的规划，稳步前进。' },
+            { age: 40, time: '09:36', image: '🌞', desc: '中午', encouragement: '你像正午的太阳，光芒四射，事业达到巅峰。' },
+            { age: 41, time: '09:50', image: '🏆', desc: '中午', encouragement: '你在事业上已经取得了显著的成就，备受尊敬。' },
+            { age: 42, time: '10:05', image: '👨‍👩‍👧‍👦', desc: '中午', encouragement: '你的家庭幸福美满，是你最坚实的后盾。' },
+            { age: 43, time: '10:19', image: '💡', desc: '中午', encouragement: '你拥有丰富的人生经验，能够给他人提供宝贵的建议。' },
+            { age: 44, time: '10:34', image: '🌟', desc: '中午', encouragement: '你仍然充满活力，不断追求新的目标。' },
+            { age: 45, time: '10:48', image: '🌅', desc: '午后', encouragement: '你开始进入人生的下半场，更加注重生活的质量。' },
+            { age: 46, time: '11:02', image: '🎨', desc: '午后', encouragement: '你开始培养自己的兴趣爱好，享受生活的乐趣。' },
+            { age: 47, time: '11:17', image: '🚶', desc: '午后', encouragement: '你开始放慢脚步，欣赏生活中的美好。' },
+            { age: 48, time: '11:31', image: '❤️', desc: '午后', encouragement: '你更加珍惜身边的人和事，注重情感的交流。' },
+            { age: 49, time: '11:46', image: '🌟', desc: '午后', encouragement: '你仍然保持着积极的心态，享受人生的每一个阶段。' },
+            { age: 50, time: '12:00', image: '🌞', desc: '正午', encouragement: '你正处于人生的中点，积累了丰富的经验和智慧。' },
+            { age: 51, time: '12:14', image: '🏆', desc: '午后', encouragement: '你在事业上已经功成名就，开始享受人生的果实。' },
+            { age: 52, time: '12:29', image: '👨‍👩‍👧‍👦', desc: '午后', encouragement: '你的孩子已经长大成人，你开始享受天伦之乐。' },
+            { age: 53, time: '12:43', image: '🌍', desc: '午后', encouragement: '你开始有更多的时间和精力去探索世界。' },
+            { age: 54, time: '12:58', image: '🎯', desc: '午后', encouragement: '你对自己的人生有了更深刻的理解，更加从容。' },
+            { age: 55, time: '13:12', image: '🌟', desc: '午后', encouragement: '你散发着成熟的魅力，成为年轻人的导师。' },
+            { age: 56, time: '13:26', image: '🎨', desc: '午后', encouragement: '你开始追求艺术和文化，丰富自己的精神世界。' },
+            { age: 57, time: '13:41', image: '🚶', desc: '午后', encouragement: '你享受慢生活，注重健康和养生。' },
+            { age: 58, time: '13:55', image: '❤️', desc: '午后', encouragement: '你更加珍惜与家人和朋友相处的时光。' },
+            { age: 59, time: '14:10', image: '🌅', desc: '傍晚', encouragement: '你像傍晚的夕阳，散发着温暖的光芒。' },
+            { age: 60, time: '14:24', image: '🌇', desc: '傍晚', encouragement: '你已经退休，开始享受悠闲的晚年生活。' },
+            { age: 61, time: '14:38', image: '🎣', desc: '傍晚', encouragement: '你有更多的时间去做自己喜欢的事情，如钓鱼、下棋等。' },
+            { age: 62, time: '14:53', image: '🌱', desc: '傍晚', encouragement: '你像秋天的枫叶，绽放出最后的美丽。' },
+            { age: 63, time: '15:07', image: '🌟', desc: '傍晚', encouragement: '你拥有丰富的人生智慧，是家庭和社会的宝贵财富。' },
+            { age: 64, time: '15:22', image: '👨‍👩‍👧‍👦', desc: '傍晚', encouragement: '你享受与孙子孙女相处的时光，体验隔代亲情的快乐。' },
+            { age: 65, time: '15:36', image: '🌍', desc: '傍晚', encouragement: '你可能开始环游世界，实现年轻时的梦想。' },
+            { age: 66, time: '15:50', image: '🎨', desc: '傍晚', encouragement: '你开始学习新的技能，如绘画、书法等，丰富自己的生活。' },
+            { age: 67, time: '16:05', image: '🚶', desc: '傍晚', encouragement: '你保持适度的运动，保持健康的身体。' },
+            { age: 68, time: '16:19', image: '❤️', desc: '傍晚', encouragement: '你更加注重情感的交流，与家人和朋友保持密切的联系。' },
+            { age: 69, time: '16:34', image: '🌟', desc: '傍晚', encouragement: '你仍然保持着积极的心态，享受人生的每一刻。' },
+            { age: 70, time: '16:48', image: '🌇', desc: '黄昏', encouragement: '你像黄昏的天空，绚丽多彩，充满智慧。' },
+            { age: 71, time: '17:02', image: '🏆', desc: '黄昏', encouragement: '你已经度过了充实的一生，值得骄傲和自豪。' },
+            { age: 72, time: '17:17', image: '👨‍👩‍👧‍👦', desc: '黄昏', encouragement: '你的家庭和睦，是你最大的幸福。' },
+            { age: 73, time: '17:31', image: '💡', desc: '黄昏', encouragement: '你仍然保持着好奇心，不断学习新的知识。' },
+            { age: 74, time: '17:46', image: '🌟', desc: '黄昏', encouragement: '你是年轻人的榜样，传递着正能量。' },
+            { age: 75, time: '18:00', image: '🌅', desc: '黄昏', encouragement: '你像夕阳西下，散发着最后的温暖和光芒。' },
+            { age: 76, time: '18:14', image: '🎨', desc: '夜晚', encouragement: '你开始享受宁静的夜晚，回忆过去的美好时光。' },
+            { age: 77, time: '18:29', image: '🚶', desc: '夜晚', encouragement: '你保持着平和的心态，面对生活的一切。' },
+            { age: 78, time: '18:43', image: '❤️', desc: '夜晚', encouragement: '你更加珍惜与家人相处的时光，感受亲情的温暖。' },
+            { age: 79, time: '18:58', image: '🌟', desc: '夜晚', encouragement: '你仍然保持着乐观的心态，享受人生的每一个瞬间。' },
+            { age: 80, time: '19:12', image: '🌙', desc: '夜晚', encouragement: '你像夜晚的月亮，宁静而明亮，充满智慧。' },
+            { age: 81, time: '19:26', image: '🏆', desc: '夜晚', encouragement: '你已经度过了辉煌的一生，值得后人敬仰。' },
+            { age: 82, time: '19:41', image: '👨‍👩‍👧‍👦', desc: '夜晚', encouragement: '你的家庭是你最宝贵的财富，带给你无尽的快乐。' },
+            { age: 83, time: '19:55', image: '💡', desc: '夜晚', encouragement: '你仍然有自己的见解和智慧，为他人提供帮助。' },
+            { age: 84, time: '20:10', image: '🌟', desc: '夜晚', encouragement: '你像夜空中的星星，虽然微弱但依然闪亮。' },
+            { age: 85, time: '20:24', image: '🌅', desc: '夜晚', encouragement: '你已经看透了人生的真谛，更加珍惜当下。' },
+            { age: 86, time: '20:38', image: '🎨', desc: '夜晚', encouragement: '你开始享受简单的快乐，如阅读、听音乐等。' },
+            { age: 87, time: '20:53', image: '🚶', desc: '夜晚', encouragement: '你保持着适度的活动，保持身体的健康。' },
+            { age: 88, time: '21:07', image: '❤️', desc: '夜晚', encouragement: '你更加注重情感的交流，与家人和朋友保持联系。' },
+            { age: 89, time: '21:22', image: '🌟', desc: '夜晚', encouragement: '你仍然保持着积极的心态，享受人生的每一刻。' },
+            { age: 90, time: '21:36', image: '🌙', desc: '深夜', encouragement: '你像深夜的月光，温柔而宁静，充满智慧。' },
+            { age: 91, time: '21:50', image: '🏆', desc: '深夜', encouragement: '你已经度过了漫长而充实的一生，值得骄傲。' },
+            { age: 92, time: '22:05', image: '👨‍👩‍👧‍👦', desc: '深夜', encouragement: '你的家庭是你最大的幸福，带给你无尽的温暖。' },
+            { age: 93, time: '22:19', image: '💡', desc: '深夜', encouragement: '你仍然有自己的智慧和见解，为他人提供帮助。' },
+            { age: 94, time: '22:34', image: '🌟', desc: '深夜', encouragement: '你像夜空中最亮的星，照亮他人的道路。' },
+            { age: 95, time: '22:48', image: '🌅', desc: '深夜', encouragement: '你已经接近人生的终点，但仍然保持着乐观的心态。' },
+            { age: 96, time: '23:02', image: '🎨', desc: '深夜', encouragement: '你享受着生命的最后时光，回忆着过去的美好。' },
+            { age: 97, time: '23:17', image: '🚶', desc: '深夜', encouragement: '你保持着平和的心态，面对生命的自然规律。' },
+            { age: 98, time: '23:31', image: '❤️', desc: '深夜', encouragement: '你珍惜与家人相处的每一刻，感受亲情的温暖。' },
+            { age: 99, time: '23:46', image: '🌟', desc: '深夜', encouragement: '你像夜空中的流星，虽然短暂但却耀眼。' },
+            { age: 100, time: '24:00', image: '🌠', desc: '午夜', encouragement: '你已经走完了人生的旅程，留下了美好的回忆。' }
+        ];
+
+        // 颜色映射
+        const colorMap = {
+            0: '#0a0a0a',
+            10: '#1a1a2e',
+            20: '#16213e',
+            30: '#0f3460',
+            40: '#1a1a2e',
+            50: '#16213e',
+            60: '#0f3460',
+            70: '#1a1a2e',
+            80: '#16213e',
+            90: '#0f3460',
+            100: '#0a0a0a'
+        };
+
+        // 获取当前日期
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentDay = currentDate.getDate();
+
+        // 初始化年份下拉菜单
+        const yearSelect = document.getElementById('year');
+        for (let i = currentYear; i >= currentYear - 100; i--) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            yearSelect.appendChild(option);
+        }
+
+        // 初始化月份下拉菜单
+        const monthSelect = document.getElementById('month');
+        for (let i = 1; i <= 12; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            monthSelect.appendChild(option);
+        }
+
+        // 初始化日期下拉菜单
+        function updateDays() {
+            const daySelect = document.getElementById('day');
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            
+            // 清空日期下拉菜单
+            daySelect.innerHTML = '<option value="">日</option>';
+            
+            if (year && month) {
+                // 计算当月的天数
+                const daysInMonth = new Date(year, month, 0).getDate();
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    daySelect.appendChild(option);
+                }
+            }
+        }
+
+        // 监听年份和月份变化，更新日期下拉菜单
+        yearSelect.addEventListener('change', updateDays);
+        monthSelect.addEventListener('change', updateDays);
+
+        // 计算按钮点击事件
+        document.getElementById('calculateButton').addEventListener('click', function() {
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            const day = parseInt(document.getElementById('day').value);
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // 验证输入
+            if (!year || !month || !day) {
+                errorMessage.textContent = '请完整选择出生日期';
+                return;
+            }
+            
+            // 验证日期是否有效
+            const birthDate = new Date(year, month - 1, day);
+            if (birthDate.getFullYear() !== year || birthDate.getMonth() + 1 !== month || birthDate.getDate() !== day) {
+                errorMessage.textContent = '请选择有效的出生日期';
+                return;
+            }
+            
+            // 验证日期是否为未来日期
+            if (birthDate > currentDate) {
+                errorMessage.textContent = '不能选择未来日期';
+                return;
+            }
+            
+            // 验证年龄是否超过100岁
+            const ageInMilliseconds = currentDate - birthDate;
+            const ageInYears = ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25);
+            if (ageInYears > 100) {
+                errorMessage.textContent = '年龄不能超过100岁';
+                return;
+            }
+            
+            // 计算人生时间（100岁对应24小时）
+            const lifeTimeInHours = (ageInYears / 100) * 24;
+            const hours = Math.floor(lifeTimeInHours);
+            const minutes = Math.round((lifeTimeInHours - hours) * 60);
+            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            
+            // 找到对应的年龄段数据
+            let ageDataItem = ageData[0];
+            for (let i = 1; i < ageData.length; i++) {
+                if (ageInYears < ageData[i].age) {
+                    ageDataItem = ageData[i - 1];
+                    break;
+                }
+                if (i === ageData.length - 1) {
+                    ageDataItem = ageData[i];
+                }
+            }
+            
+            // 找到对应的颜色
+            let backgroundColor = colorMap[0];
+            for (let age in colorMap) {
+                if (ageInYears >= age) {
+                    backgroundColor = colorMap[age];
+                }
+            }
+            
+            // 更新UI
+            document.body.style.backgroundColor = backgroundColor;
+            document.getElementById('timeDisplay').textContent = ageDataItem.time;
+            document.getElementById('imageContainer').textContent = ageDataItem.image;
+            document.getElementById('encouragement').textContent = ageDataItem.encouragement;
+            
+            // 隐藏输入部分，显示结果部分
+            document.getElementById('inputSection').style.display = 'none';
+            
+            // 触发动画效果
+            const resultSection = document.getElementById('resultSection');
+            resultSection.style.opacity = '0';
+            resultSection.style.transform = 'translateY(20px)';
+            resultSection.style.display = 'flex';
+            
+            // 重新触发动画
+            setTimeout(() => {
+                resultSection.style.transition = 'all 0.5s ease-in-out';
+                resultSection.style.opacity = '1';
+                resultSection.style.transform = 'translateY(0)';
+            }, 10);
+            
+            // 清空错误信息
+            errorMessage.textContent = '';
+        });
+
+        // 返回按钮点击事件
+        document.getElementById('backButton').addEventListener('click', function() {
+            // 显示输入部分，隐藏结果部分
+            document.getElementById('resultSection').style.display = 'none';
+            
+            // 触发动画效果
+            const inputSection = document.getElementById('inputSection');
+            inputSection.style.opacity = '0';
+            inputSection.style.transform = 'translateY(20px)';
+            inputSection.style.display = 'block';
+            
+            // 重新触发动画
+            setTimeout(() => {
+                inputSection.style.transition = 'all 0.5s ease-in-out';
+                inputSection.style.opacity = '1';
+                inputSection.style.transform = 'translateY(0)';
+            }, 10);
+            
+            // 重置背景颜色
+            document.body.style.backgroundColor = '#121212';
+        });
+    </script>
+</body>
+</html>
