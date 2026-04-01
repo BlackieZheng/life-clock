@@ -3,10 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生命时钟</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>你现在在人生的几点钟</title>
+    <!-- Open Graph 元标签 -->
+    <meta property="og:title" content="你现在在人生的几点钟">
+    <meta property="og:description" content="探索属于你的人生时刻，了解你现在在人生的几点钟">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://10.192.178.196:8085">
+    <meta property="og:site_name" content="人生时钟">
+    <!-- Twitter Card 元标签 -->
+    <meta name="twitter:title" content="你现在在人生的几点钟">
+    <meta name="twitter:description" content="探索属于你的人生时刻，了解你现在在人生的几点钟">
+    <meta name="twitter:card" content="summary">
+    <!-- 通用元标签 -->
+    <meta name="description" content="探索属于你的人生时刻，了解你现在在人生的几点钟">
+    <meta name="keywords" content="人生时钟,人生几点钟,生命时钟,人生时刻">
+    <!-- 飞书/企业微信等平台可能需要的标签 -->
+    <meta name="application-name" content="你现在在人生的几点钟">
+    <meta name="apple-mobile-web-app-title" content="人生时钟">
+    <!-- 中国社交平台标签 -->
+    <meta name="name" content="你现在在人生的几点钟">
+    <meta itemprop="name" content="你现在在人生的几点钟">
+    <meta itemprop="description" content="探索属于你的人生时刻，了解你现在在人生的几点钟">
+    <!-- 飞书特定标签 -->
+    <meta property="lark:title" content="你现在在人生的几点钟">
+    <meta property="lark:description" content="探索属于你的人生时刻，了解你现在在人生的几点钟">
     <style>
         * {
             margin: 0;
@@ -14,569 +34,1257 @@
             box-sizing: border-box;
         }
 
+        /* 隐藏滚动条 */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 1s ease;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
-        .container {
-            background-color: #1e1e1e;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-            max-width: 520px;
-            width: 90%;
-            transition: all 0.5s ease;
-            border: 1px solid #2d2d2d;
+        body::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari and Opera */
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            padding: 1rem;
+        }
+
+        /* 天空背景层 */
+        .sky-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            transition: background 0.5s ease;
+            animation: skyShift 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes skyShift {
+            0% {
+                transform: scale(1) translate(0, 0);
+            }
+            100% {
+                transform: scale(1.1) translate(5%, 3%);
+            }
+        }
+
+        /* 星星效果 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1.5;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 风景前景层 */
+        .landscape-foreground {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .landscape-svg {
+            width: 200%;
+            height: 100%;
+            animation: landscapeParallax 30s linear infinite;
+        }
+
+        @keyframes landscapeParallax {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* 内容层 */
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            width: 95%;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+            padding: 1.5rem 0;
+        }
+
+        .clock-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: clamp(24px, 4vw, 48px);
+            padding: clamp(1.2rem, 2.5vw, 1.8rem) clamp(0.8rem, 1.5vw, 1.2rem);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(0);
+            margin: 1rem 0 2rem;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .clock-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 横屏适配 */
+        @media (orientation: landscape) {
+            .content {
+                max-width: 600px;
+            }
+            .clock-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* 竖屏适配 */
+        @media (orientation: portrait) {
+            .footer {
+                bottom: 1rem;
+                z-index: -1;
+            }
         }
 
         h1 {
-            text-align: left;
-            margin-bottom: 12px;
-            color: #667eea;
-            font-size: 2.0rem;
-            font-weight: 600;
-            letter-spacing: 0.2px;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin: 0.5rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
         }
 
         .subtitle {
-            text-align: left;
-            margin-bottom: 16px;
-            color: #b0b0b0;
-            font-size: 0.9rem;
-            font-weight: 400;
-            letter-spacing: 0.1px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 8px;
-            font-size: 1.4rem;
-            font-weight: 500;
-            letter-spacing: 0.2px;
-        }
-
-        .encouragement {
-            text-align: center;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin: 0.5rem 0 2rem;
+            opacity: 0.9;
+            font-weight: 300;
             line-height: 1.4;
-            margin: 2px 0;
-            font-weight: 400;
-            letter-spacing: 0.1px;
         }
 
-        .input-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* 生日输入区 */
+        .birthday-input {
+            margin: 1rem 0;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            margin-bottom: 0.6rem;
+            font-weight: 500;
         }
 
         .date-inputs {
             display: flex;
-            gap: 10px;
+            gap: 0.8rem;
+            justify-content: center;
             flex-wrap: wrap;
-            justify-content: flex-start;
         }
 
-        select {
-            padding: 14px 16px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            background-color: #2a2a2a;
-            color: #e0e0e0;
-            font-size: 1rem;
-            min-width: 110px;
+        .date-select {
+            padding: 1.2rem 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            border: none;
+            border-radius: 16px;
+            outline: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 90px;
+            max-width: 120px;
+            min-height: 56px;
+        }
+
+        .date-select:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .date-input {
+            padding: 1.2rem 1.5rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            outline: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
             transition: all 0.3s ease;
         }
 
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-            background-color: #2d2d3e;
+        .date-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .button-container {
+        /* 快捷选择按钮 */
+        .quick-select {
+            margin: 0.8rem 0;
+        }
+
+        .quick-select h3 {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+        }
+
+        .quick-buttons {
             display: flex;
-            justify-content: flex-start;
-            margin-top: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        button {
-            padding: 14px 28px;
+        .quick-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             border: none;
-            border-radius: 8px;
-            background-color: #667eea;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            font-size: 1rem;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
         }
 
-        button:hover {
-            background-color: #5a6fd8;
+        .quick-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
         }
 
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+        /* 生成按钮 */
+        .generate-btn {
+            padding: 0.9rem 2.2rem;
+            font-size: clamp(1rem, 2.5vw, 1.2rem);
+            border: none;
+            border-radius: 24px;
+            background: rgba(255, 107, 107, 0.9);
+            color: white;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 320px;
         }
 
-        .back-button {
-            margin-top: 8px;
+        .generate-btn:hover {
+            background: rgba(238, 90, 82, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .result-section {
-            display: none;
+        .generate-btn:disabled {
+            background: rgba(255, 107, 107, 0.5);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 结果页面样式 */
+        .result-page .clock-card {
+            padding: clamp(1.2rem, 2.5vw, 1.8rem) clamp(0.8rem, 1.5vw, 1.2rem);
+            min-height: 320px;
+        }
+
+        .result-page h1 {
+            margin-bottom: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-page h1 span {
+            font-weight: 300;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 16px;
+            margin: 0.3rem 0;
+        }
+
+        .best-moment {
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+            margin: 1rem 0;
+            font-weight: 600;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 结果展示区 */
+        .result {
+            margin-top: 1.5rem;
+            animation: slideUp 0.5s ease-out;
+            display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 1rem;
         }
 
-        .time-display {
-            font-size: 7rem;
-            font-weight: 700;
-            color: #667eea;
-            margin: 2px 0 1px;
-            letter-spacing: 1px;
-            text-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        .life-time {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin: 0.5rem 0;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .image-container {
-            font-size: 11rem;
-            margin: 2px 0 2px;
-            transition: transform 0.3s ease;
+        .image-display {
+            font-size: clamp(6rem, 15vw, 10rem);
+            margin: 0.5rem 0;
+            animation: pulse 2s infinite;
         }
 
-        .image-container:hover {
-            transform: scale(1.1);
+        .image-name {
+            font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+            margin: 0.5rem 0;
+            font-weight: 600;
         }
 
-        .error-message {
-            color: #ff6b6b;
+        .encouragement {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            line-height: 1.4;
+            margin: 0.5rem 0;
+            font-weight: 400;
+            max-width: 90%;
+        }
+
+        .age-info {
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            opacity: 0.9;
+        }
+
+        /* 按钮 */
+        .btn {
+            padding: 0.8rem 2rem;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+        }
+
+        .back-btn {
+            background: rgba(102, 126, 234, 0.9);
+        }
+
+        .back-btn:hover {
+            background: rgba(118, 75, 162, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .share-btn {
+            background: rgba(255, 107, 107, 0.9);
+        }
+
+        .share-btn:hover {
+            background: rgba(238, 90, 82, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-container {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* 分享弹窗 */
+        .share-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .share-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: clamp(1.5rem, 4vw, 2rem);
+            max-width: 400px;
+            width: 90%;
+            color: #333;
             text-align: center;
-            margin-top: 10px;
-            font-size: 0.9rem;
+            animation: slideUp 0.3s ease-out;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .copyright {
-            text-align: center;
-            margin-top: 24px;
-            color: #666;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
+        .share-content h2 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
         }
 
-        /* 动画效果 */
-        .input-section,
-        .result-section {
-            animation: fadeIn 0.5s ease-in-out;
+        .share-text {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.4;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .share-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 16px;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .close-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .close-btn:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .time-display,
-        .image-container,
-        .encouragement {
-            animation: slideInUp 0.6s ease-out;
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
-        .time-display {
-            animation-delay: 0.1s;
+        /* Toast提示 */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
-        .image-container {
-            animation-delay: 0.2s;
+        .toast.show {
+            opacity: 1;
         }
 
-        .encouragement {
-            animation-delay: 0.3s;
-        }
-
-        .back-button {
-            animation: slideInUp 0.6s ease-out 0.4s both;
-        }
-
-        .copyright {
-            animation: fadeIn 0.5s ease-in-out 0.5s both;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .clock-card {
+                padding: 2rem;
+                border-radius: 32px;
             }
 
             h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .date-input {
+                padding: 1rem 1.2rem;
+                font-size: 1.1rem;
+            }
+
+            .generate-btn {
+                padding: 1rem 2.5rem;
+                font-size: 1.1rem;
+            }
+
+            .result-page h1 span {
+                font-size: 1.8rem;
+                padding: 0.1rem 0.6rem;
+                margin-left: 0.3rem;
+            }
+
+            .best-moment {
+                font-size: 1.4rem;
+                margin-bottom: 1.5rem;
+                font-weight: 600;
+            }
+
+            .life-time {
+                font-size: 2.5rem;
+            }
+
+            .image-display {
+                font-size: 7rem;
+            }
+
+            .encouragement {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .clock-card {
+                padding: 1.5rem;
+                border-radius: 24px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .quick-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .result-page h1 {
+                line-height: 1.4;
+            }
+
+            .result-page h1 span {
                 font-size: 1.5rem;
+                padding: 0.1rem 0.5rem;
+                margin-left: 0.2rem;
+                display: inline-block;
+                margin-top: 0.3rem;
             }
 
-            h2 {
+            .best-moment {
                 font-size: 1.2rem;
+                margin-bottom: 1.3rem;
+                font-weight: 600;
             }
 
-            .date-inputs {
+            .life-time {
+                font-size: 2rem;
+            }
+
+            .image-display {
+                font-size: 6rem;
+            }
+
+            .btn-container {
                 flex-direction: column;
                 align-items: center;
             }
 
-            select {
-                width: 100%;
-                max-width: 200px;
+            .btn {
+                width: 80%;
+                margin: 0.5rem 0;
             }
 
-            .time-display {
-                font-size: 4rem;
+            .share-content {
+                padding: 1.5rem;
             }
+        }
 
-            .image-container {
-                font-size: 6rem;
-            }
+        /* 页脚 */
+        .footer {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            z-index: -1;
+            padding: 0 1rem;
+        }
 
-            .encouragement {
-                font-size: 1rem;
-            }
+        /* 页面隐藏 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="input-section" id="inputSection">
-            <h1>你的人生时钟，<br>指向几点？</h1>
-            <p class="subtitle">请选择你的出生日期</p>
-            <div class="date-inputs">
-                <select id="year">
-                    <option value="">年</option>
-                </select>
-                <select id="month">
-                    <option value="">月</option>
-                </select>
-                <select id="day">
-                    <option value="">日</option>
-                </select>
-            </div>
-            <div class="error-message" id="errorMessage"></div>
-            <div class="button-container">
-                <button id="calculateButton">计算</button>
+    <!-- 天空背景层 -->
+    <div class="sky-background" id="skyBackground"></div>
+    
+    <!-- 星星效果 -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- 风景前景层 -->
+    <div class="landscape-foreground" id="landscapeForeground">
+        <svg class="landscape-svg" id="landscapeSvg" viewBox="0 0 1800 200" preserveAspectRatio="none"></svg>
+    </div>
+    
+    <!-- 内容层 -->
+    <div class="content">
+        <!-- 输入页面 -->
+        <div class="page active" id="inputPage">
+            <div class="clock-card">
+                <h1>你现在在人生的几点钟</h1>
+                <p class="subtitle">输入你的出生日期，探索属于你的人生时刻</p>
+                
+                <!-- 生日输入区 -->
+                <div class="birthday-input">
+                    <div class="input-group">
+                        <label>出生日期</label>
+                        <div class="date-inputs">
+                            <select class="date-select" id="yearSelect">
+                                <!-- 年份选项将通过JS生成 -->
+                            </select>
+                            <select class="date-select" id="monthSelect">
+                                <!-- 月份选项将通过JS生成 -->
+                            </select>
+                            <select class="date-select" id="daySelect">
+                                <!-- 日期选项将通过JS生成 -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 快捷选择按钮 -->
+                    <div class="quick-select">
+                        <h3>快捷选择</h3>
+                        <div class="quick-buttons">
+                            <button class="quick-btn" onclick="setBirthDate('1990-01-01')">1990年</button>
+                            <button class="quick-btn" onclick="setBirthDate('1995-01-01')">1995年</button>
+                            <button class="quick-btn" onclick="setBirthDate('2000-01-01')">2000年</button>
+                            <button class="quick-btn" onclick="setBirthDate('2005-01-01')">2005年</button>
+                            <button class="quick-btn" onclick="setBirthDate('2010-01-01')">2010年</button>
+                            <button class="quick-btn" onclick="setBirthDate('2015-01-01')">2015年</button>
+                        </div>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="calculateLifeClock()">生成人生时钟</button>
+                </div>
             </div>
         </div>
 
-        <div class="result-section" id="resultSection">
-            <h2>你现在处在人生的</h2>
-            <div class="time-display" id="timeDisplay"></div>
-            <div class="image-container" id="imageContainer"></div>
-            <div class="encouragement" id="encouragement"></div>
-            <button class="back-button" id="backButton">返回</button>
+        <!-- 结果页面 -->
+        <div class="page" id="resultPage">
+            <div class="clock-card">
+                <h1>你现在处在 <span id="lifeTimeDisplay"></span></h1>
+                <p class="best-moment">现在正是最好的时刻</p>
+                
+                <!-- 结果展示区 -->
+                <div class="result" id="result">
+                    <div class="image-display" id="imageDisplay"></div>
+                    <div class="image-name" id="imageNameDisplay"></div>
+                    <div class="encouragement" id="encouragementDisplay"></div>
+                    
+                    <div class="btn-container">
+                        <button class="btn back-btn" onclick="goBack()">重新输入</button>
+                        <button class="btn share-btn" onclick="openShareModal()">分享结果</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="copyright">© 2026 生命时钟 - 现在是最好的时间</div>
     </div>
 
-    <script>
-        // 年龄段数据
-        const ageData = [
-            { age: 0, time: '00:00', image: '🌱', desc: '凌晨时分', encouragement: '你是一颗刚刚发芽的种子，充满无限可能。' },
-            { age: 1, time: '00:14', image: '👶', desc: '深夜', encouragement: '你是一个新生的婴儿，世界对你来说充满了未知和惊喜。' },
-            { age: 2, time: '00:29', image: '🚼', desc: '深夜', encouragement: '你正在学习探索这个世界，每一个发现都是新的开始。' },
-            { age: 3, time: '00:43', image: '🧒', desc: '深夜', encouragement: '你的好奇心像星星一样闪烁，照亮你前进的道路。' },
-            { age: 4, time: '00:58', image: '🎨', desc: '深夜', encouragement: '你开始展现自己的个性，每一个创造都是独特的。' },
-            { age: 5, time: '01:12', image: '🏫', desc: '凌晨', encouragement: '你即将开始学校生活，知识的大门正在为你打开。' },
-            { age: 6, time: '01:27', image: '📚', desc: '凌晨', encouragement: '你像海绵一样吸收知识，每一次学习都让你成长。' },
-            { age: 7, time: '01:41', image: '🎒', desc: '凌晨', encouragement: '你已经适应了学校生活，朋友和知识伴你同行。' },
-            { age: 8, time: '01:56', image: '⚽', desc: '凌晨', encouragement: '你精力充沛，运动和游戏让你健康成长。' },
-            { age: 9, time: '02:10', image: '🎵', desc: '凌晨', encouragement: '你开始发现自己的兴趣，音乐、艺术或科学。' },
-            { age: 10, time: '02:24', image: '📱', desc: '凌晨', encouragement: '你是数字时代的原住民，科技为你打开新的世界。' },
-            { age: 11, time: '02:39', image: '🌞', desc: '凌晨', encouragement: '你像初升的太阳，充满活力和希望。' },
-            { age: 12, time: '02:53', image: '🌸', desc: '黎明前', encouragement: '你开始进入青春期，身体和思想都在发生变化。' },
-            { age: 13, time: '03:08', image: '🌸', desc: '黎明前', encouragement: '你像含苞待放的花朵，即将绽放出美丽。' },
-            { age: 14, time: '03:22', image: '🌟', desc: '黎明前', encouragement: '你开始有自己的想法和梦想，未来在向你招手。' },
-            { age: 15, time: '03:36', image: '🎯', desc: '黎明前', encouragement: '你开始明确自己的目标，为之努力奋斗。' },
-            { age: 16, time: '03:51', image: '🚗', desc: '黎明', encouragement: '你即将获得更多自由，学会为自己的选择负责。' },
-            { age: 17, time: '04:05', image: '🎓', desc: '黎明', encouragement: '你即将完成中学学业，为更高的目标努力。' },
-            { age: 18, time: '04:20', image: '🎉', desc: '黎明', encouragement: '你已经成年，开始独立面对生活的挑战和机遇。' },
-            { age: 19, time: '04:34', image: '🏫', desc: '早晨', encouragement: '你可能正在大学深造，拓展自己的视野。' },
-            { age: 20, time: '04:48', image: '🌍', desc: '早晨', encouragement: '你开始探索更广阔的世界，寻找自己的位置。' },
-            { age: 21, time: '05:03', image: '💼', desc: '早晨', encouragement: '你可能开始工作，为自己的未来奠定基础。' },
-            { age: 22, time: '05:17', image: '❤️', desc: '早晨', encouragement: '你可能开始建立深入的人际关系，寻找人生伴侣。' },
-            { age: 23, time: '05:32', image: '🏠', desc: '早晨', encouragement: '你可能开始组建自己的家庭，创造属于自己的生活。' },
-            { age: 24, time: '05:46', image: '🚀', desc: '早晨', encouragement: '你正处于事业的起步阶段，充满干劲和热情。' },
-            { age: 25, time: '06:00', image: '🌅', desc: '日出', encouragement: '你像初升的太阳，开始展现自己的光芒。' },
-            { age: 26, time: '06:14', image: '💪', desc: '上午', encouragement: '你正处于人生的黄金时期，精力充沛，能力出众。' },
-            { age: 27, time: '06:29', image: '🎯', desc: '上午', encouragement: '你已经明确了自己的目标，正在为之努力奋斗。' },
-            { age: 28, time: '06:43', image: '🏆', desc: '上午', encouragement: '你开始收获努力的成果，事业和生活都在稳步发展。' },
-            { age: 29, time: '06:58', image: '👨‍💼', desc: '上午', encouragement: '你在事业上逐渐成熟，开始承担更多责任。' },
-            { age: 30, time: '07:12', image: '🌟', desc: '上午', encouragement: '你已经进入人生的而立之年，更加成熟和自信。' },
-            { age: 31, time: '07:26', image: '💡', desc: '上午', encouragement: '你开始有更多的人生智慧，能够更好地应对挑战。' },
-            { age: 32, time: '07:41', image: '🏠', desc: '上午', encouragement: '你的家庭生活稳定，事业蒸蒸日上。' },
-            { age: 33, time: '07:55', image: '👨‍👩‍👧‍👦', desc: '上午', encouragement: '你可能已经有了自己的孩子，体验为人父母的快乐。' },
-            { age: 34, time: '08:10', image: '🚗', desc: '上午', encouragement: '你正处于人生的高速发展期，各方面都在进步。' },
-            { age: 35, time: '08:24', image: '🏆', desc: '上午', encouragement: '你在事业上取得了一定的成就，成为行业中的佼佼者。' },
-            { age: 36, time: '08:38', image: '💼', desc: '上午', encouragement: '你已经是职场中的资深人士，经验丰富。' },
-            { age: 37, time: '08:53', image: '🌱', desc: '上午', encouragement: '你开始培养新的兴趣和爱好，丰富自己的生活。' },
-            { age: 38, time: '09:07', image: '🌟', desc: '上午', encouragement: '你散发着成熟的魅力，成为他人的榜样。' },
-            { age: 39, time: '09:22', image: '🎯', desc: '上午', encouragement: '你对自己的人生有了更清晰的规划，稳步前进。' },
-            { age: 40, time: '09:36', image: '🌞', desc: '中午', encouragement: '你像正午的太阳，光芒四射，事业达到巅峰。' },
-            { age: 41, time: '09:50', image: '🏆', desc: '中午', encouragement: '你在事业上已经取得了显著的成就，备受尊敬。' },
-            { age: 42, time: '10:05', image: '👨‍👩‍👧‍👦', desc: '中午', encouragement: '你的家庭幸福美满，是你最坚实的后盾。' },
-            { age: 43, time: '10:19', image: '💡', desc: '中午', encouragement: '你拥有丰富的人生经验，能够给他人提供宝贵的建议。' },
-            { age: 44, time: '10:34', image: '🌟', desc: '中午', encouragement: '你仍然充满活力，不断追求新的目标。' },
-            { age: 45, time: '10:48', image: '🌅', desc: '午后', encouragement: '你开始进入人生的下半场，更加注重生活的质量。' },
-            { age: 46, time: '11:02', image: '🎨', desc: '午后', encouragement: '你开始培养自己的兴趣爱好，享受生活的乐趣。' },
-            { age: 47, time: '11:17', image: '🚶', desc: '午后', encouragement: '你开始放慢脚步，欣赏生活中的美好。' },
-            { age: 48, time: '11:31', image: '❤️', desc: '午后', encouragement: '你更加珍惜身边的人和事，注重情感的交流。' },
-            { age: 49, time: '11:46', image: '🌟', desc: '午后', encouragement: '你仍然保持着积极的心态，享受人生的每一个阶段。' },
-            { age: 50, time: '12:00', image: '🌞', desc: '正午', encouragement: '你正处于人生的中点，积累了丰富的经验和智慧。' },
-            { age: 51, time: '12:14', image: '🏆', desc: '午后', encouragement: '你在事业上已经功成名就，开始享受人生的果实。' },
-            { age: 52, time: '12:29', image: '👨‍👩‍👧‍👦', desc: '午后', encouragement: '你的孩子已经长大成人，你开始享受天伦之乐。' },
-            { age: 53, time: '12:43', image: '🌍', desc: '午后', encouragement: '你开始有更多的时间和精力去探索世界。' },
-            { age: 54, time: '12:58', image: '🎯', desc: '午后', encouragement: '你对自己的人生有了更深刻的理解，更加从容。' },
-            { age: 55, time: '13:12', image: '🌟', desc: '午后', encouragement: '你散发着成熟的魅力，成为年轻人的导师。' },
-            { age: 56, time: '13:26', image: '🎨', desc: '午后', encouragement: '你开始追求艺术和文化，丰富自己的精神世界。' },
-            { age: 57, time: '13:41', image: '🚶', desc: '午后', encouragement: '你享受慢生活，注重健康和养生。' },
-            { age: 58, time: '13:55', image: '❤️', desc: '午后', encouragement: '你更加珍惜与家人和朋友相处的时光。' },
-            { age: 59, time: '14:10', image: '🌅', desc: '傍晚', encouragement: '你像傍晚的夕阳，散发着温暖的光芒。' },
-            { age: 60, time: '14:24', image: '🌇', desc: '傍晚', encouragement: '你已经退休，开始享受悠闲的晚年生活。' },
-            { age: 61, time: '14:38', image: '🎣', desc: '傍晚', encouragement: '你有更多的时间去做自己喜欢的事情，如钓鱼、下棋等。' },
-            { age: 62, time: '14:53', image: '🌱', desc: '傍晚', encouragement: '你像秋天的枫叶，绽放出最后的美丽。' },
-            { age: 63, time: '15:07', image: '🌟', desc: '傍晚', encouragement: '你拥有丰富的人生智慧，是家庭和社会的宝贵财富。' },
-            { age: 64, time: '15:22', image: '👨‍👩‍👧‍👦', desc: '傍晚', encouragement: '你享受与孙子孙女相处的时光，体验隔代亲情的快乐。' },
-            { age: 65, time: '15:36', image: '🌍', desc: '傍晚', encouragement: '你可能开始环游世界，实现年轻时的梦想。' },
-            { age: 66, time: '15:50', image: '🎨', desc: '傍晚', encouragement: '你开始学习新的技能，如绘画、书法等，丰富自己的生活。' },
-            { age: 67, time: '16:05', image: '🚶', desc: '傍晚', encouragement: '你保持适度的运动，保持健康的身体。' },
-            { age: 68, time: '16:19', image: '❤️', desc: '傍晚', encouragement: '你更加注重情感的交流，与家人和朋友保持密切的联系。' },
-            { age: 69, time: '16:34', image: '🌟', desc: '傍晚', encouragement: '你仍然保持着积极的心态，享受人生的每一刻。' },
-            { age: 70, time: '16:48', image: '🌇', desc: '黄昏', encouragement: '你像黄昏的天空，绚丽多彩，充满智慧。' },
-            { age: 71, time: '17:02', image: '🏆', desc: '黄昏', encouragement: '你已经度过了充实的一生，值得骄傲和自豪。' },
-            { age: 72, time: '17:17', image: '👨‍👩‍👧‍👦', desc: '黄昏', encouragement: '你的家庭和睦，是你最大的幸福。' },
-            { age: 73, time: '17:31', image: '💡', desc: '黄昏', encouragement: '你仍然保持着好奇心，不断学习新的知识。' },
-            { age: 74, time: '17:46', image: '🌟', desc: '黄昏', encouragement: '你是年轻人的榜样，传递着正能量。' },
-            { age: 75, time: '18:00', image: '🌅', desc: '黄昏', encouragement: '你像夕阳西下，散发着最后的温暖和光芒。' },
-            { age: 76, time: '18:14', image: '🎨', desc: '夜晚', encouragement: '你开始享受宁静的夜晚，回忆过去的美好时光。' },
-            { age: 77, time: '18:29', image: '🚶', desc: '夜晚', encouragement: '你保持着平和的心态，面对生活的一切。' },
-            { age: 78, time: '18:43', image: '❤️', desc: '夜晚', encouragement: '你更加珍惜与家人相处的时光，感受亲情的温暖。' },
-            { age: 79, time: '18:58', image: '🌟', desc: '夜晚', encouragement: '你仍然保持着乐观的心态，享受人生的每一个瞬间。' },
-            { age: 80, time: '19:12', image: '🌙', desc: '夜晚', encouragement: '你像夜晚的月亮，宁静而明亮，充满智慧。' },
-            { age: 81, time: '19:26', image: '🏆', desc: '夜晚', encouragement: '你已经度过了辉煌的一生，值得后人敬仰。' },
-            { age: 82, time: '19:41', image: '👨‍👩‍👧‍👦', desc: '夜晚', encouragement: '你的家庭是你最宝贵的财富，带给你无尽的快乐。' },
-            { age: 83, time: '19:55', image: '💡', desc: '夜晚', encouragement: '你仍然有自己的见解和智慧，为他人提供帮助。' },
-            { age: 84, time: '20:10', image: '🌟', desc: '夜晚', encouragement: '你像夜空中的星星，虽然微弱但依然闪亮。' },
-            { age: 85, time: '20:24', image: '🌅', desc: '夜晚', encouragement: '你已经看透了人生的真谛，更加珍惜当下。' },
-            { age: 86, time: '20:38', image: '🎨', desc: '夜晚', encouragement: '你开始享受简单的快乐，如阅读、听音乐等。' },
-            { age: 87, time: '20:53', image: '🚶', desc: '夜晚', encouragement: '你保持着适度的活动，保持身体的健康。' },
-            { age: 88, time: '21:07', image: '❤️', desc: '夜晚', encouragement: '你更加注重情感的交流，与家人和朋友保持联系。' },
-            { age: 89, time: '21:22', image: '🌟', desc: '夜晚', encouragement: '你仍然保持着积极的心态，享受人生的每一刻。' },
-            { age: 90, time: '21:36', image: '🌙', desc: '深夜', encouragement: '你像深夜的月光，温柔而宁静，充满智慧。' },
-            { age: 91, time: '21:50', image: '🏆', desc: '深夜', encouragement: '你已经度过了漫长而充实的一生，值得骄傲。' },
-            { age: 92, time: '22:05', image: '👨‍👩‍👧‍👦', desc: '深夜', encouragement: '你的家庭是你最大的幸福，带给你无尽的温暖。' },
-            { age: 93, time: '22:19', image: '💡', desc: '深夜', encouragement: '你仍然有自己的智慧和见解，为他人提供帮助。' },
-            { age: 94, time: '22:34', image: '🌟', desc: '深夜', encouragement: '你像夜空中最亮的星，照亮他人的道路。' },
-            { age: 95, time: '22:48', image: '🌅', desc: '深夜', encouragement: '你已经接近人生的终点，但仍然保持着乐观的心态。' },
-            { age: 96, time: '23:02', image: '🎨', desc: '深夜', encouragement: '你享受着生命的最后时光，回忆着过去的美好。' },
-            { age: 97, time: '23:17', image: '🚶', desc: '深夜', encouragement: '你保持着平和的心态，面对生命的自然规律。' },
-            { age: 98, time: '23:31', image: '❤️', desc: '深夜', encouragement: '你珍惜与家人相处的每一刻，感受亲情的温暖。' },
-            { age: 99, time: '23:46', image: '🌟', desc: '深夜', encouragement: '你像夜空中的流星，虽然短暂但却耀眼。' },
-            { age: 100, time: '24:00', image: '🌠', desc: '午夜', encouragement: '你已经走完了人生的旅程，留下了美好的回忆。' }
-        ];
+    <!-- Toast提示 -->
+    <div class="toast" id="toast">分享文案已复制到剪贴板，欢迎分享！</div>
 
-        // 颜色映射
-        const colorMap = {
-            0: '#0a0a0a',
-            10: '#1a1a2e',
-            20: '#16213e',
-            30: '#0f3460',
-            40: '#1a1a2e',
-            50: '#16213e',
-            60: '#0f3460',
-            70: '#1a1a2e',
-            80: '#16213e',
-            90: '#0f3460',
-            100: '#0a0a0a'
+    <script>
+        // 意象数据
+        const lifeData = {
+            0: { time: "00:00", icon: "🌌", name: "星尘初聚", quote: "你从星辰中醒来，故事正要开始" },
+            1: { time: "00:14", icon: "🌱", name: "探头的嫩芽", quote: "第一次睁开眼睛，世界正对你微笑" },
+            2: { time: "00:29", icon: "🦶", name: "蹒跚的脚步", quote: "每一步摇晃，都是走向独立的勇气" },
+            3: { time: "00:43", icon: "🎨", name: "涂鸦的小手", quote: "你的第一笔，画出了整个宇宙" },
+            4: { time: "00:58", icon: "🦋", name: "蹒跚的蝶", quote: "跌跌撞撞，也是飞翔的练习" },
+            5: { time: "01:12", icon: "🌈", name: "初见的彩虹", quote: "世界在你眼中，永远是彩色的" },
+            6: { time: "01:26", icon: "📖", name: "好奇的眼睛", quote: "每一天都是一本书，你刚翻开扉页" },
+            7: { time: "01:41", icon: "🪁", name: "放飞的风筝", quote: "第一次放手，天空比你想象的更高" },
+            8: { time: "01:55", icon: "🪁", name: "迎风的风筝", quote: "线在手中，天空在脚下" },
+            9: { time: "02:10", icon: "🌟", name: "许愿的星星", quote: "相信什么，就会成为什么" },
+            10: { time: "02:24", icon: "🌈", name: "雨后的虹", quote: "你的色彩，正在慢慢显现" },
+            11: { time: "02:38", icon: "📝", name: "书写的故事", quote: "你开始写下，属于自己的第一行" },
+            12: { time: "02:53", icon: "🌙", name: "初升的月亮", quote: "开始有自己的光亮，不必借谁的光" },
+            13: { time: "03:07", icon: "🔑", name: "解锁的门", quote: "青春的大门，为你敞开" },
+            14: { time: "03:22", icon: "🌊", name: "奔涌的溪流", quote: "向前奔跑吧，石头只会让你更清澈" },
+            15: { time: "03:36", icon: "🎯", name: "瞄准的箭", quote: "第一次瞄准，梦想有了方向" },
+            16: { time: "03:50", icon: "🔥", name: "初燃的火苗", quote: "热情刚刚点燃，足够照亮前方" },
+            17: { time: "04:05", icon: "🌄", name: "山顶的晨光", quote: "青春的山顶，风景独好" },
+            18: { time: "04:19", icon: "🌅", name: "地平线的金边", quote: "成年是另一片天空，你正站在边界上" },
+            19: { time: "04:34", icon: "🚪", name: "推开的世界", quote: "一扇门关上，另一扇门打开" },
+            20: { time: "04:48", icon: "☀️", name: "八九点钟的太阳", quote: "世界是你们的，朝气蓬勃，无限可能" },
+            21: { time: "05:02", icon: "🌻", name: "初绽的向日葵", quote: "面朝阳光，心自温暖" },
+            22: { time: "05:17", icon: "🌻", name: "向阳的向日葵", quote: "找到你的方向，然后只管生长" },
+            23: { time: "05:31", icon: "🏔️", name: "山脚的行者", quote: "路在脚下，顶峰在望" },
+            24: { time: "05:46", icon: "🏔️", name: "初登的山丘", quote: "第一座山顶的风景，值得所有汗水" },
+            25: { time: "06:00", icon: "🌳", name: "扎根的树苗", quote: "向下扎根，向上生长" },
+            26: { time: "06:14", icon: "🌳", name: "伸展的枝干", quote: "根基渐稳，开始触碰更高的天空" },
+            27: { time: "06:29", icon: "🔥", name: "渐旺的炉火", quote: "温度在升，能量在聚" },
+            28: { time: "06:43", icon: "🎯", name: "瞄准的箭", quote: "目标清晰，蓄势待发" },
+            29: { time: "06:58", icon: "⛰️", name: "登山的行者", quote: "每一步都算数，每一米都值得" },
+            30: { time: "07:12", icon: "🔥", name: "旺盛的炉火", quote: "而立之年，你拥有了属于自己的温度" },
+            31: { time: "07:26", icon: "🌊", name: "汇入的溪流", quote: "你不再孤单，与世界相连" },
+            32: { time: "07:41", icon: "⛵", name: "扬帆的船", quote: "风正起，海正蓝，去你想去的地方" },
+            33: { time: "07:55", icon: "🏗️", name: "奠基的基石", quote: "你正在建造，属于自己的城堡" },
+            34: { time: "08:10", icon: "🌾", name: "抽穗的麦田", quote: "努力开始有了形状，等待丰收" },
+            35: { time: "08:24", icon: "🔗", name: "连接的纽带", quote: "你成为桥梁，连接过去与未来" },
+            36: { time: "08:38", icon: "🏛️", name: "筑墙的匠人", quote: "一砖一瓦，都在建造你的人生" },
+            37: { time: "08:53", icon: "🌳", name: "成荫的绿树", quote: "你的存在，已能为他人遮阳" },
+            38: { time: "09:07", icon: "🔗", name: "编织的网", quote: "连接的人与事，织成你的世界" },
+            39: { time: "09:22", icon: "⚖️", name: "平衡的秤", quote: "懂得取舍，方得自在" },
+            40: { time: "09:36", icon: "⛰️", name: "山腰的劲松", quote: "视野开阔，不惑之年，心更坚定" },
+            41: { time: "09:50", icon: "🍷", name: "初酿的酒", quote: "时间开始，为你沉淀风味" },
+            42: { time: "10:05", icon: "🌊", name: "沉稳的江河", quote: "不急不躁，自有流向" },
+            43: { time: "10:19", icon: "🎻", name: "初响的琴音", quote: "阅历开始，奏出和弦" },
+            44: { time: "10:34", icon: "🍷", name: "陈酿的酒", quote: "时间让你更醇厚，更懂自己" },
+            45: { time: "10:48", icon: "🌳", name: "繁茂的大树", quote: "枝叶渐丰，浓荫初成" },
+            46: { time: "11:02", icon: "🌳", name: "繁茂的大树", quote: "浓荫初成，可以为他人遮风挡雨" },
+            47: { time: "11:17", icon: "🔥", name: "稳定的火焰", quote: "不灭不熄，恰到好处" },
+            48: { time: "11:31", icon: "🔥", name: "正午的骄阳", quote: "此刻你拥有最完整的力量" },
+            49: { time: "11:46", icon: "📚", name: "积累的典籍", quote: "半生阅历，已成一本书" },
+            50: { time: "12:00", icon: "☀️", name: "日正当中", quote: "半百之年，正是人生的正午" },
+            51: { time: "12:14", icon: "🌾", name: "金黄的麦浪", quote: "丰收在望，心安理得" },
+            52: { time: "12:29", icon: "🍂", name: "金秋的硕果", quote: "果实累累，你已足够丰盈" },
+            53: { time: "12:43", icon: "🕯️", name: "温润的烛光", quote: "光芒柔和，温暖依旧" },
+            54: { time: "12:58", icon: "📚", name: "厚重的典籍", quote: "阅历如书，每一页都值得翻阅" },
+            55: { time: "13:12", icon: "🎻", name: "悠扬的乐章", quote: "人生的旋律，渐入佳境" },
+            56: { time: "13:26", icon: "🕯️", name: "稳定的烛火", quote: "不疾不徐，自有节奏" },
+            57: { time: "13:41", icon: "🌅", name: "午后的暖阳", quote: "光线正好，不刺眼不黯淡" },
+            58: { time: "13:55", icon: "🌅", name: "暖阳斜照", quote: "光线柔和，恰到好处" },
+            59: { time: "14:10", icon: "🍂", name: "静美的秋叶", quote: "每一片叶子，都有自己的形状" },
+            60: { time: "14:24", icon: "🌾", name: "晚风中的稻浪", quote: "从容摇曳，丰盈自在" },
+            61: { time: "14:38", icon: "🔥", name: "温暖的余火", quote: "热度不减，只是更懂分寸" },
+            62: { time: "14:53", icon: "🔥", name: "壁炉的余烬", quote: "温暖仍在，照亮围坐的人" },
+            63: { time: "15:07", icon: "🌇", name: "初现的晚霞", quote: "另一种美，刚刚开始" },
+            64: { time: "15:22", icon: "🌇", name: "绚丽的晚霞", quote: "每一刻都可以是黄金时刻" },
+            65: { time: "15:36", icon: "🎻", name: "成熟的琴声", quote: "阅历奏出的旋律，深沉动人" },
+            66: { time: "15:50", icon: "🎻", name: "悠扬的琴声", quote: "阅历奏出的旋律，更加动人" },
+            67: { time: "16:05", icon: "🌙", name: "初升的月光", quote: "夜未深，光已亮" },
+            68: { time: "16:19", icon: "🌙", name: "初升的月亮", quote: "另一种光芒，同样明亮" },
+            69: { time: "16:34", icon: "✨", name: "闪烁的星辰", quote: "你在夜空中，开始发光" },
+            70: { time: "16:48", icon: "✨", name: "第一颗晚星", quote: "你的光芒依然被看见" },
+            71: { time: "17:02", icon: "🌌", name: "星河的起点", quote: "故事还长，星河浩瀚" },
+            72: { time: "17:17", icon: "🌌", name: "深邃的银河", quote: "阅历如星河，浩瀚而宁静" },
+            73: { time: "17:31", icon: "🔥", name: "传递的火种", quote: "你的光，正在点亮他人" },
+            74: { time: "17:46", icon: "🔥", name: "不灭的薪火", quote: "你的火种，将在他人手中继续" },
+            75: { time: "18:00", icon: "🌊", name: "入海的江河", quote: "宽广如海，包容万物" },
+            76: { time: "18:14", icon: "🌊", name: "汇入大海", quote: "所有河流，终将归于广阔" },
+            77: { time: "18:29", icon: "🌙", name: "圆月的清辉", quote: "圆满，是最好的形容词" },
+            78: { time: "18:43", icon: "🌙", name: "满月的清辉", quote: "圆满而温柔，照亮夜行的人" },
+            79: { time: "18:58", icon: "🌳", name: "古树的年轮", quote: "一圈又一圈，都是故事" },
+            80: { time: "19:12", icon: "🌳", name: "古树的年轮", quote: "每一圈都是勋章，每一道都是故事" },
+            81: { time: "19:26", icon: "📜", name: "泛黄的卷轴", quote: "你的人生，已成经典" },
+            82: { time: "19:41", icon: "📜", name: "羊皮卷轴", quote: "你的一生是一部史诗" },
+            83: { time: "19:55", icon: "🔥", name: "余温的炉火", quote: "不灭的火，在心中" },
+            84: { time: "20:10", icon: "🔥", name: "温润的余温", quote: "热度不减，只是更加柔和" },
+            85: { time: "20:24", icon: "🌟", name: "恒定的星光", quote: "你的位置，从未改变" },
+            86: { time: "20:38", icon: "🌟", name: "北极星辰", quote: "恒定不移，成为他人的方向" },
+            87: { time: "20:53", icon: "🕊️", name: "归巢的白鸽", quote: "经历风雨，终得安宁" },
+            88: { time: "21:07", icon: "🕊️", name: "白鸽归巢", quote: "历经风雨，终得安宁" },
+            89: { time: "21:22", icon: "🌾", name: "垂首的麦穗", quote: "饱满者，最懂谦逊" },
+            90: { time: "21:36", icon: "🌾", name: "金黄的麦穗", quote: "饱满而谦逊，是岁月的馈赠" },
+            91: { time: "21:50", icon: "🌌", name: "星云的深处", quote: "你与宇宙，从未分离" },
+            92: { time: "22:05", icon: "🌌", name: "星云深处", quote: "你是宇宙的一部分，从未离开" },
+            93: { time: "22:19", icon: "🔥", name: "永恒的火光", quote: "燃烧过，即永恒" },
+            94: { time: "22:34", icon: "🔥", name: "永恒之火", quote: "燃烧过，就是永恒" },
+            95: { time: "22:48", icon: "🌙", name: "安睡的明月", quote: "温柔俯瞰，曾照亮的世界" },
+            96: { time: "23:02", icon: "🌙", name: "安睡的月亮", quote: "温柔地俯瞰着曾照亮的世界" },
+            97: { time: "23:17", icon: "✨", name: "星尘的归处", quote: "来自星辰，归于星辰" },
+            98: { time: "23:31", icon: "✨", name: "化为星辰", quote: "成为夜空中，后来者的光" },
+            99: { time: "23:46", icon: "🌅", name: "黎明的预告", quote: "一个时代的结束，是另一个的开始" },
+            100: { time: "24:00", icon: "🌅", name: "新的黎明", quote: "一个圆满的轮回，故事仍在继续" }
         };
 
-        // 获取当前日期
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth() + 1;
-        const currentDay = currentDate.getDate();
+        // 天空场景配置
+        const skyScenes = [
+            { timeRange: [0, 3], gradient: "linear-gradient(180deg, #0B0F2A 0%, #1A1F3A 50%, #2D2A3A 100%)", stars: true, landscape: "mountains" },
+            { timeRange: [3, 6], gradient: "linear-gradient(180deg, #2A1F2E 0%, #5A3E2A 40%, #D4A373 100%)", stars: false, landscape: "mountains-dawn" },
+            { timeRange: [6, 9], gradient: "linear-gradient(180deg, #FFD49F 0%, #FFB347 50%, #F4A261 100%)", stars: false, landscape: "hills-morning" },
+            { timeRange: [9, 12], gradient: "linear-gradient(180deg, #FCE8B2 0%, #FFD966 40%, #F4A261 100%)", stars: false, landscape: "forest" },
+            { timeRange: [12, 15], gradient: "linear-gradient(180deg, #FFE0A3 0%, #F4A261 50%, #E9C46A 100%)", stars: false, landscape: "field-afternoon" },
+            { timeRange: [15, 18], gradient: "linear-gradient(180deg, #E9C46A 0%, #E76F51 50%, #8D5A3A 100%)", stars: false, landscape: "sunset-field" },
+            { timeRange: [18, 21], gradient: "linear-gradient(180deg, #8D5A3A 0%, #5E3A2A 50%, #2D2A3A 100%)", stars: true, landscape: "dusk-village" },
+            { timeRange: [21, 24], gradient: "linear-gradient(180deg, #2D2A3A 0%, #1A1A2E 50%, #0F0F1A 100%)", stars: true, landscape: "stars" }
+        ];
 
-        // 初始化年份下拉菜单
-        const yearSelect = document.getElementById('year');
-        for (let i = currentYear; i >= currentYear - 100; i--) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            yearSelect.appendChild(option);
-        }
+        // 风景SVG模板
+        const landscapeTemplates = {
+            "mountains": `
+                <polygon points="0,200 200,80 400,150 600,50 800,120 1000,60 1200,100 1400,80 1600,120 1800,60 1800,200" fill="rgba(50,40,30,0.6)"/>
+                <polygon points="0,200 150,100 300,180 450,100 600,160 750,80 900,140 1050,80 1200,120 1350,100 1500,140 1650,80 1800,120 1800,200" fill="rgba(30,22,18,0.3)"/>
+            `,
+            "mountains-dawn": `
+                <polygon points="0,200 200,80 400,150 600,50 800,120 1000,60 1200,100 1400,80 1600,120 1800,60 1800,200" fill="rgba(50,40,30,0.5)"/>
+                <polygon points="0,200 150,100 300,180 450,100 600,160 750,80 900,140 1050,80 1200,120 1350,100 1500,140 1650,80 1800,120 1800,200" fill="rgba(30,22,18,0.2)"/>
+            `,
+            "hills-morning": `
+                <polygon points="0,200 200,120 400,180 600,100 800,160 1000,80 1200,140 1400,100 1600,140 1800,80 1800,200" fill="rgba(50,40,30,0.4)"/>
+                <polygon points="0,200 150,140 300,190 450,120 600,170 750,100 900,150 1050,110 1200,160 1350,120 1500,170 1650,110 1800,160 1800,200" fill="rgba(30,22,18,0.2)"/>
+                <!-- 圆形光斑点缀 -->
+                <circle cx="300" cy="150" r="5" fill="rgba(255,255,255,0.3)"/>
+                <circle cx="600" cy="130" r="4" fill="rgba(255,255,255,0.2)"/>
+                <circle cx="900" cy="140" r="6" fill="rgba(255,255,255,0.25)"/>
+                <circle cx="1200" cy="130" r="5" fill="rgba(255,255,255,0.3)"/>
+                <circle cx="1500" cy="140" r="4" fill="rgba(255,255,255,0.2)"/>
+            `,
+            "forest": `
+                <rect x="0" y="150" width="1800" height="50" fill="rgba(50,40,30,0.5)"/>
+                <!-- 矩形树木 -->
+                <rect x="100" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <rect x="180" y="90" width="20" height="60" fill="rgba(30,40,20,0.6)"/>
+                <rect x="260" y="110" width="20" height="40" fill="rgba(30,40,20,0.6)"/>
+                <rect x="340" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <rect x="420" y="90" width="20" height="60" fill="rgba(30,40,20,0.6)"/>
+                <rect x="500" y="110" width="20" height="40" fill="rgba(30,40,20,0.6)"/>
+                <rect x="580" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <rect x="660" y="90" width="20" height="60" fill="rgba(30,40,20,0.6)"/>
+                <rect x="740" y="110" width="20" height="40" fill="rgba(30,40,20,0.6)"/>
+                <rect x="820" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <rect x="900" y="90" width="20" height="60" fill="rgba(30,40,20,0.6)"/>
+                <rect x="980" y="110" width="20" height="40" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1060" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1140" y="90" width="20" height="60" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1220" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1300" y="90" width="20" height="60" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1380" y="110" width="20" height="40" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1460" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1540" y="90" width="20" height="60" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1620" y="110" width="20" height="40" fill="rgba(30,40,20,0.6)"/>
+                <rect x="1700" y="100" width="20" height="50" fill="rgba(30,40,20,0.6)"/>
+                <!-- 远处山脉 -->
+                <polygon points="0,150 200,80 400,120 600,70 800,100 1000,60 1200,90 1400,70 1600,100 1800,60 1800,150" fill="rgba(30,22,18,0.3)"/>
+            `,
+            "field-afternoon": `
+                <rect x="0" y="180" width="1800" height="20" fill="rgba(50,40,30,0.6)"/>
+                <!-- 水平条纹麦田 -->
+                <rect x="0" y="170" width="1800" height="10" fill="rgba(180,150,80,0.4)"/>
+                <rect x="0" y="160" width="1800" height="10" fill="rgba(160,130,60,0.4)"/>
+                <rect x="0" y="150" width="1800" height="10" fill="rgba(180,150,80,0.3)"/>
+                <!-- 光斑 -->
+                <circle cx="200" cy="160" r="8" fill="rgba(255,255,255,0.2)"/>
+                <circle cx="500" cy="150" r="6" fill="rgba(255,255,255,0.15)"/>
+                <circle cx="800" cy="165" r="7" fill="rgba(255,255,255,0.18)"/>
+                <circle cx="1100" cy="155" r="5" fill="rgba(255,255,255,0.15)"/>
+                <circle cx="1400" cy="160" r="8" fill="rgba(255,255,255,0.2)"/>
+                <circle cx="1700" cy="150" r="6" fill="rgba(255,255,255,0.15)"/>
+            `,
+            "sunset-field": `
+                <rect x="0" y="180" width="1800" height="20" fill="rgba(50,40,30,0.6)"/>
+                <!-- 水平条纹麦田 -->
+                <rect x="0" y="170" width="1800" height="10" fill="rgba(200,100,50,0.4)"/>
+                <rect x="0" y="160" width="1800" height="10" fill="rgba(180,90,40,0.4)"/>
+                <rect x="0" y="150" width="1800" height="10" fill="rgba(200,100,50,0.3)"/>
+                <!-- 橙色光斑 -->
+                <circle cx="200" cy="160" r="10" fill="rgba(255,150,100,0.3)"/>
+                <circle cx="500" cy="150" r="8" fill="rgba(255,150,100,0.25)"/>
+                <circle cx="800" cy="165" r="9" fill="rgba(255,150,100,0.28)"/>
+                <circle cx="1100" cy="155" r="7" fill="rgba(255,150,100,0.25)"/>
+                <circle cx="1400" cy="160" r="10" fill="rgba(255,150,100,0.3)"/>
+                <circle cx="1700" cy="150" r="8" fill="rgba(255,150,100,0.25)"/>
+            `,
+            "dusk-village": `
+                <polygon points="0,200 200,150 400,180 600,140 800,170 1000,130 1200,160 1400,140 1600,170 1800,130 1800,200" fill="rgba(50,40,30,0.6)"/>
+                <!-- 房屋剪影 -->
+                <rect x="250" y="160" width="40" height="40" fill="rgba(30,22,18,0.5)"/>
+                <rect x="350" y="150" width="50" height="50" fill="rgba(30,22,18,0.5)"/>
+                <rect x="450" y="160" width="40" height="40" fill="rgba(30,22,18,0.5)"/>
+                <rect x="650" y="150" width="50" height="50" fill="rgba(30,22,18,0.5)"/>
+                <rect x="750" y="160" width="40" height="40" fill="rgba(30,22,18,0.5)"/>
+                <rect x="850" y="150" width="50" height="50" fill="rgba(30,22,18,0.5)"/>
+                <rect x="1050" y="160" width="40" height="40" fill="rgba(30,22,18,0.5)"/>
+                <rect x="1150" y="150" width="50" height="50" fill="rgba(30,22,18,0.5)"/>
+                <rect x="1250" y="160" width="40" height="40" fill="rgba(30,22,18,0.5)"/>
+                <rect x="1450" y="150" width="50" height="50" fill="rgba(30,22,18,0.5)"/>
+                <rect x="1550" y="160" width="40" height="40" fill="rgba(30,22,18,0.5)"/>
+                <rect x="1650" y="150" width="50" height="50" fill="rgba(30,22,18,0.5)"/>
+                <!-- 树木 -->
+                <rect x="300" y="140" width="15" height="40" fill="rgba(30,40,20,0.4)"/>
+                <rect x="400" y="130" width="15" height="50" fill="rgba(30,40,20,0.4)"/>
+                <rect x="700" y="130" width="15" height="50" fill="rgba(30,40,20,0.4)"/>
+                <rect x="900" y="140" width="15" height="40" fill="rgba(30,40,20,0.4)"/>
+                <rect x="1100" y="140" width="15" height="40" fill="rgba(30,40,20,0.4)"/>
+                <rect x="1200" y="130" width="15" height="50" fill="rgba(30,40,20,0.4)"/>
+                <rect x="1500" y="130" width="15" height="50" fill="rgba(30,40,20,0.4)"/>
+                <rect x="1700" y="140" width="15" height="40" fill="rgba(30,40,20,0.4)"/>
+            `,
+            "stars": `
+                <polygon points="0,200 200,180 400,190 600,170 800,185 1000,165 1200,180 1400,170 1600,185 1800,165 1800,200" fill="rgba(30,22,18,0.6)"/>
+                <polygon points="0,200 150,170 300,185 450,165 600,180 750,160 900,175 1050,155 1200,170 1350,155 1500,175 1650,155 1800,170 1800,200" fill="rgba(20,15,12,0.4)"/>
+            `
+        };
 
-        // 初始化月份下拉菜单
-        const monthSelect = document.getElementById('month');
-        for (let i = 1; i <= 12; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            monthSelect.appendChild(option);
-        }
+        // 全局变量存储当前计算结果
+        let currentResult = {
+            age: 0,
+            lifeTime: "00:00",
+            imageName: "",
+            encouragement: ""
+        };
 
-        // 初始化日期下拉菜单
-        function updateDays() {
-            const daySelect = document.getElementById('day');
-            const year = parseInt(yearSelect.value);
-            const month = parseInt(monthSelect.value);
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 生成日期选择器选项
+            const today = new Date();
+            const currentYear = today.getFullYear();
             
-            // 清空日期下拉菜单
-            daySelect.innerHTML = '<option value="">日</option>';
+            // 生成年份选项
+            const yearSelect = document.getElementById('yearSelect');
+            for (let year = currentYear; year >= 1900; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year + '年';
+                yearSelect.appendChild(option);
+            }
             
-            if (year && month) {
-                // 计算当月的天数
+            // 生成月份选项
+            const monthSelect = document.getElementById('monthSelect');
+            for (let month = 1; month <= 12; month++) {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month + '月';
+                monthSelect.appendChild(option);
+            }
+            
+            // 生成日期选项
+            function generateDays() {
+                const daySelect = document.getElementById('daySelect');
+                const year = parseInt(document.getElementById('yearSelect').value);
+                const month = parseInt(document.getElementById('monthSelect').value);
+                
+                // 清空现有选项
+                daySelect.innerHTML = '';
+                
+                // 计算当月天数
                 const daysInMonth = new Date(year, month, 0).getDate();
-                for (let i = 1; i <= daysInMonth; i++) {
+                
+                // 生成日期选项
+                for (let day = 1; day <= daysInMonth; day++) {
                     const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i;
+                    option.value = day;
+                    option.textContent = day + '日';
                     daySelect.appendChild(option);
                 }
             }
+            
+            // 初始生成日期选项
+            generateDays();
+            
+            // 监听年月变化，更新日期选项
+            document.getElementById('yearSelect').addEventListener('change', generateDays);
+            document.getElementById('monthSelect').addEventListener('change', generateDays);
+            
+            // 检查localStorage中是否有保存的生日
+            const savedBirthDate = localStorage.getItem('birthDate');
+            if (savedBirthDate) {
+                const [year, month, day] = savedBirthDate.split('-').map(Number);
+                document.getElementById('yearSelect').value = year;
+                document.getElementById('monthSelect').value = month;
+                generateDays();
+                document.getElementById('daySelect').value = day;
+            } else {
+                // 默认值1995-01-01
+                document.getElementById('yearSelect').value = 1995;
+                document.getElementById('monthSelect').value = 1;
+                generateDays();
+                document.getElementById('daySelect').value = 1;
+            }
+
+            // 检查URL参数是否有birthDate
+            const urlParams = new URLSearchParams(window.location.search);
+            const birthDateStr = urlParams.get('birthDate');
+            
+            if (birthDateStr) {
+                calculateLifeClock(birthDateStr);
+            }
+        });
+
+        // 设置生日
+        function setBirthDate(dateStr) {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            document.getElementById('yearSelect').value = year;
+            document.getElementById('monthSelect').value = month;
+            
+            // 生成日期选项
+            const daySelect = document.getElementById('daySelect');
+            daySelect.innerHTML = '';
+            const daysInMonth = new Date(year, month, 0).getDate();
+            for (let d = 1; d <= daysInMonth; d++) {
+                const option = document.createElement('option');
+                option.value = d;
+                option.textContent = d + '日';
+                daySelect.appendChild(option);
+            }
+            
+            document.getElementById('daySelect').value = day;
         }
 
-        // 监听年份和月份变化，更新日期下拉菜单
-        yearSelect.addEventListener('change', updateDays);
-        monthSelect.addEventListener('change', updateDays);
-
-        // 计算按钮点击事件
-        document.getElementById('calculateButton').addEventListener('click', function() {
-            const year = parseInt(yearSelect.value);
-            const month = parseInt(monthSelect.value);
-            const day = parseInt(document.getElementById('day').value);
-            const errorMessage = document.getElementById('errorMessage');
+        // 计算人生时钟
+        function calculateLifeClock(birthDateStr) {
+            let birthDate;
+            if (!birthDateStr) {
+                // 从选择器获取日期
+                const year = document.getElementById('yearSelect').value;
+                const month = document.getElementById('monthSelect').value.padStart(2, '0');
+                const day = document.getElementById('daySelect').value.padStart(2, '0');
+                birthDateStr = `${year}-${month}-${day}`;
+            }
             
-            // 验证输入
-            if (!year || !month || !day) {
-                errorMessage.textContent = '请完整选择出生日期';
+            birthDate = new Date(birthDateStr);
+            const today = new Date();
+            
+            // 检查是否选择了未来的日期
+            if (birthDate > today) {
+                alert('不能选择未来的日期');
                 return;
             }
             
-            // 验证日期是否有效
-            const birthDate = new Date(year, month - 1, day);
-            if (birthDate.getFullYear() !== year || birthDate.getMonth() + 1 !== month || birthDate.getDate() !== day) {
-                errorMessage.textContent = '请选择有效的出生日期';
-                return;
-            }
-            
-            // 验证日期是否为未来日期
-            if (birthDate > currentDate) {
-                errorMessage.textContent = '不能选择未来日期';
-                return;
-            }
-            
-            // 验证年龄是否超过100岁
-            const ageInMilliseconds = currentDate - birthDate;
-            const ageInYears = ageInMilliseconds / (1000 * 60 * 60 * 24 * 365.25);
+            // 检查是否超过100岁
+            const ageInYears = (today - birthDate) / (365.25 * 24 * 3600 * 1000);
             if (ageInYears > 100) {
-                errorMessage.textContent = '年龄不能超过100岁';
+                alert('年龄不能超过100岁');
                 return;
             }
             
-            // 计算人生时间（100岁对应24小时）
-            const lifeTimeInHours = (ageInYears / 100) * 24;
-            const hours = Math.floor(lifeTimeInHours);
-            const minutes = Math.round((lifeTimeInHours - hours) * 60);
+            // 计算年龄（精确到0.1岁）
+            const cappedAge = Math.min(ageInYears, 100);
+            const roundedAge = Math.round(cappedAge * 10) / 10;
+            
+            // 计算人生时间
+            const hourOfDay = (cappedAge / 100) * 24;
+            const hours = Math.floor(hourOfDay);
+            const minutes = Math.round((hourOfDay - hours) * 60);
             const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
             
-            // 找到对应的年龄段数据
-            let ageDataItem = ageData[0];
-            for (let i = 1; i < ageData.length; i++) {
-                if (ageInYears < ageData[i].age) {
-                    ageDataItem = ageData[i - 1];
-                    break;
-                }
-                if (i === ageData.length - 1) {
-                    ageDataItem = ageData[i];
-                }
-            }
-            
-            // 找到对应的颜色
-            let backgroundColor = colorMap[0];
-            for (let age in colorMap) {
-                if (ageInYears >= age) {
-                    backgroundColor = colorMap[age];
-                }
-            }
+            // 获取对应年龄的意象数据
+            const ageKey = Math.min(Math.floor(cappedAge), 100);
+            const lifeItem = lifeData[ageKey];
             
             // 更新UI
-            document.body.style.backgroundColor = backgroundColor;
-            document.getElementById('timeDisplay').textContent = ageDataItem.time;
-            document.getElementById('imageContainer').textContent = ageDataItem.image;
-            document.getElementById('encouragement').textContent = ageDataItem.encouragement;
+            document.getElementById('lifeTimeDisplay').textContent = timeString;
+            document.getElementById('imageDisplay').textContent = lifeItem.icon;
+            document.getElementById('imageNameDisplay').textContent = lifeItem.name;
+            document.getElementById('encouragementDisplay').textContent = lifeItem.quote;
             
-            // 隐藏输入部分，显示结果部分
-            document.getElementById('inputSection').style.display = 'none';
+            // 保存当前结果
+            currentResult = {
+                age: roundedAge,
+                lifeTime: timeString,
+                imageName: lifeItem.name,
+                encouragement: lifeItem.quote
+            };
             
-            // 触发动画效果
-            const resultSection = document.getElementById('resultSection');
-            resultSection.style.opacity = '0';
-            resultSection.style.transform = 'translateY(20px)';
-            resultSection.style.display = 'flex';
+            // 应用天空背景
+            applySkyBackground(hourOfDay);
             
-            // 重新触发动画
-            setTimeout(() => {
-                resultSection.style.transition = 'all 0.5s ease-in-out';
-                resultSection.style.opacity = '1';
-                resultSection.style.transform = 'translateY(0)';
-            }, 10);
+            // 切换到结果页面
+            document.getElementById('inputPage').classList.remove('active');
+            document.getElementById('resultPage').classList.add('active');
+            document.body.classList.add('result-page');
             
-            // 清空错误信息
-            errorMessage.textContent = '';
-        });
+            // 保存生日到localStorage
+            localStorage.setItem('birthDate', birthDateStr);
+        }
 
-        // 返回按钮点击事件
-        document.getElementById('backButton').addEventListener('click', function() {
-            // 显示输入部分，隐藏结果部分
-            document.getElementById('resultSection').style.display = 'none';
+        // 应用天空背景
+        function applySkyBackground(hourOfDay) {
+            const skyBg = document.getElementById('skyBackground');
+            const stars = document.getElementById('stars');
+            const landscapeSvg = document.getElementById('landscapeSvg');
             
-            // 触发动画效果
-            const inputSection = document.getElementById('inputSection');
-            inputSection.style.opacity = '0';
-            inputSection.style.transform = 'translateY(20px)';
-            inputSection.style.display = 'block';
+            // 找到对应的天空场景
+            const scene = skyScenes.find(s => hourOfDay >= s.timeRange[0] && hourOfDay < s.timeRange[1]);
             
-            // 重新触发动画
+            if (scene) {
+                // 设置背景渐变
+                skyBg.style.background = scene.gradient;
+                
+                // 处理星星效果
+                if (scene.stars) {
+                    addStarsEffect();
+                } else {
+                    removeStarsEffect();
+                }
+                
+                // 更新风景
+                updateLandscape(scene.landscape);
+            }
+        }
+
+        // 添加星星效果
+        function addStarsEffect() {
+            const stars = document.getElementById('stars');
+            stars.innerHTML = '';
+            
+            // 随机生成120-200个星星
+            const starCount = Math.floor(Math.random() * 80) + 120;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                // 大小2-5px随机
+                const size = Math.random() * 3 + 2;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                // 透明度0.4-1随机
+                star.style.opacity = Math.random() * 0.6 + 0.4;
+                // 闪烁动画1.5-4s随机，更快更明显
+                const duration = Math.random() * 2.5 + 1.5;
+                star.style.animation = `twinkle ${duration}s infinite ease-in-out`;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                stars.appendChild(star);
+            }
+        }
+
+        // 移除星星效果
+        function removeStarsEffect() {
+            const stars = document.getElementById('stars');
+            stars.innerHTML = '';
+        }
+
+        // 更新风景
+        function updateLandscape(landscapeType) {
+            const landscapeSvg = document.getElementById('landscapeSvg');
+            landscapeSvg.innerHTML = landscapeTemplates[landscapeType] || '';
+        }
+
+        // 返回输入页面
+        function goBack() {
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('inputPage').classList.add('active');
+            document.body.classList.remove('result-page');
+        }
+
+        // 显示Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            if (message) {
+                toast.textContent = message;
+            }
+            toast.classList.add('show');
             setTimeout(() => {
-                inputSection.style.transition = 'all 0.5s ease-in-out';
-                inputSection.style.opacity = '1';
-                inputSection.style.transform = 'translateY(0)';
-            }, 10);
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // 分享结果
+        function openShareModal() {
+            // 生成分享文案
+            const shareContent = generateShareText();
             
-            // 重置背景颜色
-            document.body.style.backgroundColor = '#121212';
-        });
+            // 复制到剪贴板
+            navigator.clipboard.writeText(shareContent)
+                .then(() => {
+                    showToast('分享文案已复制到剪贴板，欢迎分享！');
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    showToast('复制失败，请手动复制');
+                });
+        }
+
+        // 生成分享文案
+        function generateShareText() {
+            const { age, lifeTime, imageName, encouragement } = currentResult;
+            // 使用GitHub Pages链接作为分享链接
+            const shareUrl = "https://blackiezheng.github.io/life-clock/";
+            
+            return `✨ 我的人生时钟 · 此刻正好 ✨
+
+我今年 ${age} 岁，人生正走到 ${lifeTime}，正是${imageName}的时刻。
+
+"${encouragement}"
+
+最好的时间，就是现在！快来测测你的人生是几点钟吧 👇
+
+${shareUrl}`;
+        }
     </script>
+    
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>© 人生时钟2026 - 现在就是最好的时刻</p>
+    </footer>
 </body>
 </html>
